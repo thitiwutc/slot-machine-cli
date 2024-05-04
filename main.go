@@ -10,8 +10,29 @@ import (
 )
 
 func main() {
+	helpFlag := flag.Bool("h", false, "Display the help message")
+
 	flag.Usage = func() {
-		fmt.Println("Usage: slot <bet_amount>")
+		fmt.Println("Usage: slot [options] <bet amount>")
+		fmt.Println()
+		fmt.Println("Prizes:")
+		fmt.Println()
+		fmt.Println("  One cherry (🍒) wins 2.5x bet amount")
+		fmt.Println("  Two watermelons (🍉🍉) wins 3x bet amount")
+		fmt.Println("  Three bells (🔔🔔🔔) wins 5x bet amount")
+		fmt.Println("  Three diamonds (💎💎💎) wins 10x bet amount")
+		fmt.Println("  Three cat faces (🐱🐱🐱) wins 100x bet amount")
+		fmt.Println()
+		fmt.Println("Options:")
+		fmt.Println()
+		flag.PrintDefaults()
+	}
+
+	flag.Parse()
+
+	if *helpFlag {
+		flag.Usage()
+		os.Exit(0)
 	}
 
 	if len(os.Args) != 2 {
