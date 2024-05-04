@@ -17,12 +17,10 @@ type reel struct {
 type App struct {
 	symbols        []rune
 	reelCount      int
-	currentSymbols []rune
+	currentSymbols [3]rune
 }
 
 func (a *App) Run() {
-	a.currentSymbols = make([]rune, a.reelCount)
-
 	spinDur := time.Duration(a.reelCount*1000) * time.Millisecond
 	now := time.Now()
 	stopTime := now.Add(spinDur)
