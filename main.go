@@ -15,6 +15,9 @@ func main() {
 	flag.Usage = func() {
 		fmt.Println("Usage: slot [options] <bet amount>")
 		fmt.Println()
+		fmt.Println("Minimum bet amount: 1")
+		fmt.Println("Maximum bet amount: 1,000,000")
+		fmt.Println()
 		fmt.Println("Prizes:")
 		fmt.Println()
 		fmt.Println("  One cherry (🍒) wins 2.5x bet amount")
@@ -43,6 +46,11 @@ func main() {
 	betAmount, err := strconv.ParseFloat(os.Args[1], 64)
 	if err != nil {
 		fmt.Println(err)
+		flag.Usage()
+		os.Exit(1)
+	}
+
+	if betAmount < 1 || betAmount > 1_000_000 {
 		flag.Usage()
 		os.Exit(1)
 	}
