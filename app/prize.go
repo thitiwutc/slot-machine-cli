@@ -2,12 +2,6 @@ package app
 
 type prizeCalculator func(betAmount float64, symbols [3]rune) float64
 
-type prizes struct {
-	matched1 []prizeCalculator
-	matched2 []prizeCalculator
-	matched3 []prizeCalculator
-}
-
 var defaultMatched1PrizeCaltr = []prizeCalculator{
 	func(betAmount float64, symbols [3]rune) float64 {
 		for _, symbol := range symbols {
@@ -66,4 +60,32 @@ var defaultMatched3PrizeCaltr = []prizeCalculator{
 
 		return betAmount * 100
 	},
+}
+
+type prizes struct {
+	matched1 []prizeCalculator
+	matched2 []prizeCalculator
+	matched3 []prizeCalculator
+}
+
+func (p prizes) calculatePrize(betAmount float64, symbols [3]rune) float64 {
+	for _, prizeCaltr := range p.matched1 {
+		if prize := prizeCaltr(betAmount, symbols); prize > 0 {
+			return prize
+		}
+	}
+
+	for _, prizeCaltr := range p.matched2 {
+		if prize := prizeCaltr(betAmount, symbols); prize > 0 {
+			return prize
+		}
+	}
+
+	for _, prizeCaltr := range p.matched3 {
+		if prize := prizeCaltr(betAmount, symbols); prize > 0 {
+			return prize
+		}
+	}
+
+	return 0
 }

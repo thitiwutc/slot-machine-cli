@@ -69,7 +69,7 @@ func (a *App) Run(betAmount float64) {
 			prevOutput = output
 			output = ""
 		case <-ctx.Done():
-			prize := a.calculatePrize(betAmount, a.currentSymbols)
+			prize := a.prizes.calculatePrize(betAmount, a.currentSymbols)
 			if prize > 0 {
 				fmt.Printf("%s You win %.2f\n", prevOutput, prize)
 			} else {
@@ -109,28 +109,6 @@ func (a *App) spinReel(ch chan *reel, idx int, stopTime time.Time) {
 			symbolIdx++
 		}
 	}
-}
-
-func (a App) calculatePrize(betAmount float64, symbols [3]rune) float64 {
-	for _, prizeCaltr := range a.prizes.matched1 {
-		if prize := prizeCaltr(betAmount, symbols); prize > 0 {
-			return prize
-		}
-	}
-
-	for _, prizeCaltr := range a.prizes.matched2 {
-		if prize := prizeCaltr(betAmount, symbols); prize > 0 {
-			return prize
-		}
-	}
-
-	for _, prizeCaltr := range a.prizes.matched3 {
-		if prize := prizeCaltr(betAmount, symbols); prize > 0 {
-			return prize
-		}
-	}
-
-	return 0
 }
 
 // NewDefault returns App with default symbols (🍒, 🍋, 🍊, 🍇, 🍉, 🍕, 🍀, 💎, and 🔔)
