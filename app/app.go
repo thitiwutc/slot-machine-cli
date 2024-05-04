@@ -51,11 +51,11 @@ func (a *App) Run() {
 
 		fmt.Println(output)
 		time.Sleep(50 * time.Millisecond)
-		if tick.Before(stopTime) {
-			fmt.Print("\033[A")
-			fmt.Print("\033[2K")
+
+		fmt.Print("\033[A")
+		fmt.Print("\033[2K")
 		if tick.After(stopTime) {
-			fmt.Printf("%s %s\n", output, "You win nothing")
+			fmt.Printf("%s\n", output)
 			break
 		}
 	}
