@@ -54,7 +54,8 @@ func (a *App) Run() {
 		if tick.Before(stopTime) {
 			fmt.Print("\033[A")
 			fmt.Print("\033[2K")
-		} else {
+		if tick.After(stopTime) {
+			fmt.Printf("%s %s\n", output, "You win nothing")
 			break
 		}
 	}
@@ -84,9 +85,9 @@ func (a *App) spinReel(idx int, stopAt time.Time) {
 	}
 }
 
-// NewDefault returns App with default symbols (🍒, 🍋, 🍊, 🍇, 🍉, 🍕, 🍀, 💎, and 🔔) 
-// and configuration from cfg.
-func New(cfg *Config) *App {
+// NewDefault returns App with default symbols (🍒, 🍋, 🍊, 🍇, 🍉, 🍕, 🍀, 💎, and 🔔)
+// and 3 reels.
+func NewDefault() *App {
 	return &App{
 		symbols: []rune{
 			'🍒',
@@ -99,6 +100,6 @@ func New(cfg *Config) *App {
 			'💎',
 			'🔔',
 		},
-		reelCount: cfg.ReelCount,
+		reelCount: 3,
 	}
 }
