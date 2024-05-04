@@ -20,7 +20,7 @@ func main() {
 		fmt.Println()
 		fmt.Println("Prizes:")
 		fmt.Println()
-		fmt.Println("  One cherry (🍒) wins 2.5x bet amount")
+		fmt.Println("  One cherry (🍒) wins 1.5x bet amount")
 		fmt.Println("  Two watermelons (🍉🍉) wins 3x bet amount")
 		fmt.Println("  Three bells (🔔🔔🔔) wins 5x bet amount")
 		fmt.Println("  Three diamonds (💎💎💎) wins 10x bet amount")

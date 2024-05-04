@@ -20,7 +20,7 @@ Maximum bet amount: 1,000,000
 
 Prizes:
 
-  One cherry (🍒) wins 2.5x bet amount
+  One cherry (🍒) wins 1.5x bet amount
   Two watermelons (🍉🍉) wins 3x bet amount
   Three bells (🔔🔔🔔) wins 5x bet amount
   Three diamonds (💎💎💎) wins 10x bet amount

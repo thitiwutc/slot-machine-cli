@@ -6,7 +6,7 @@ var defaultMatched1PrizeCaltr = []prizeCalculator{
 	func(betAmount float64, symbols [3]rune) float64 {
 		for _, symbol := range symbols {
 			if symbol == '🍒' {
-				return betAmount * 2.5
+				return betAmount * 1.5
 			}
 		}
 
