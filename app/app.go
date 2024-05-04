@@ -60,11 +60,10 @@ func (a *App) Run(betAmount float64) {
 				output += fmt.Sprintf("%c|", symbol)
 			}
 
-			fmt.Println(output)
+			fmt.Print(output)
 			time.Sleep(50 * time.Millisecond)
 
-			fmt.Print("\033[A")
-			fmt.Print("\033[2K")
+			fmt.Print("\r\033[2K")
 
 			prevOutput = output
 			output = ""
