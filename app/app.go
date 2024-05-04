@@ -14,13 +14,82 @@ type reel struct {
 	symbol rune
 }
 
+type prizeCalculator func(betAmount float64, symbols [3]rune) float64
+
+type prizes struct {
+	matched1 []prizeCalculator
+	matched2 []prizeCalculator
+	matched3 []prizeCalculator
+}
+
+var defaultMatched1PrizeCaltr = []prizeCalculator{
+	func(betAmount float64, symbols [3]rune) float64 {
+		for _, symbol := range symbols {
+			if symbol == '🍒' {
+				return betAmount * 2
+			}
+		}
+
+		return 0
+	},
+}
+
+var defaultMatched2PrizeCaltr = []prizeCalculator{
+	func(betAmount float64, symbols [3]rune) float64 {
+		var symbolCount int
+
+		for _, symbol := range symbols {
+			if symbol == '🍉' {
+				symbolCount++
+			}
+		}
+
+		if symbolCount == 2 {
+			return betAmount * 2.5
+		}
+
+		return 0
+	},
+}
+
+var defaultMatched3PrizeCaltr = []prizeCalculator{
+	func(betAmount float64, symbols [3]rune) float64 {
+		for _, symbol := range symbols {
+			if symbol != '🔔' {
+				return 0
+			}
+		}
+
+		return betAmount * 4
+	},
+	func(betAmount float64, symbols [3]rune) float64 {
+		for _, symbol := range symbols {
+			if symbol != '💎' {
+				return 0
+			}
+		}
+
+		return betAmount * 10
+	},
+	func(betAmount float64, symbols [3]rune) float64 {
+		for _, symbol := range symbols {
+			if symbol != '🐱' {
+				return 0
+			}
+		}
+
+		return betAmount * 100
+	},
+}
+
 type App struct {
 	symbols        []rune
 	reelCount      int
 	currentSymbols [3]rune
+	prizes         prizes
 }
 
-func (a *App) Run() {
+func (a *App) Run(betAmount float64) {
 	spinDur := time.Duration(a.reelCount*1000) * time.Millisecond
 	now := time.Now()
 	stopTime := now.Add(spinDur)
@@ -68,7 +137,12 @@ func (a *App) Run() {
 			prevOutput = output
 			output = ""
 		case <-ctx.Done():
-			fmt.Printf("%s\n", prevOutput)
+			prize := a.calculatePrize(betAmount, a.currentSymbols)
+			if prize > 0 {
+				fmt.Printf("%s You win %.2f\n", prevOutput, prize)
+			} else {
+				fmt.Printf("%s You lose\n", prevOutput)
+			}
 			time.Sleep(200 * time.Millisecond)
 			return
 		}
@@ -105,6 +179,28 @@ func (a *App) spinReel(ch chan *reel, idx int, stopTime time.Time) {
 	}
 }
 
+func (a App) calculatePrize(betAmount float64, symbols [3]rune) float64 {
+	for _, prizeCaltr := range a.prizes.matched1 {
+		if prize := prizeCaltr(betAmount, symbols); prize > 0 {
+			return prize
+		}
+	}
+
+	for _, prizeCaltr := range a.prizes.matched2 {
+		if prize := prizeCaltr(betAmount, symbols); prize > 0 {
+			return prize
+		}
+	}
+
+	for _, prizeCaltr := range a.prizes.matched3 {
+		if prize := prizeCaltr(betAmount, symbols); prize > 0 {
+			return prize
+		}
+	}
+
+	return 0
+}
+
 // NewDefault returns App with default symbols (🍒, 🍋, 🍊, 🍇, 🍉, 🍕, 🍀, 💎, and 🔔)
 // and 3 reels.
 func NewDefault() *App {
@@ -121,5 +217,10 @@ func NewDefault() *App {
 			'🔔',
 		},
 		reelCount: 3,
+		prizes: prizes{
+			matched1: defaultMatched1PrizeCaltr,
+			matched2: defaultMatched2PrizeCaltr,
+			matched3: defaultMatched3PrizeCaltr,
+		},
 	}
 }
