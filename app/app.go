@@ -12,11 +12,16 @@ import (
 type App struct {
 	symbols        []rune
 	mutex          sync.RWMutex
-	currentSymbols [3]rune
+	reelCount      int
+	currentSymbols []rune
 }
 
 func (a *App) Run() {
-	spinDur := 3500 * time.Millisecond
+	a.mutex.Lock()
+	a.currentSymbols = make([]rune, a.reelCount)
+	a.mutex.Unlock()
+
+	spinDur := time.Duration(a.reelCount*1000+500) * time.Millisecond
 	now := time.Now()
 	stopTime := now.Add(spinDur)
 
@@ -79,8 +84,9 @@ func (a *App) spinReel(idx int, stopAt time.Time) {
 	}
 }
 
-// NewDefault returns App with default symbols (🍒, 🍋, 🍊, 🍇, 🍉, 🍕, 🍀, 💎, and 🔔)
-func NewDefault() *App {
+// NewDefault returns App with default symbols (🍒, 🍋, 🍊, 🍇, 🍉, 🍕, 🍀, 💎, and 🔔) 
+// and configuration from cfg.
+func New(cfg *Config) *App {
 	return &App{
 		symbols: []rune{
 			'🍒',
@@ -93,12 +99,6 @@ func NewDefault() *App {
 			'💎',
 			'🔔',
 		},
-	}
-}
-
-// New returns App with the given symbols.
-func New(symbols []rune) *App {
-	return &App{
-		symbols: symbols,
+		reelCount: cfg.ReelCount,
 	}
 }
