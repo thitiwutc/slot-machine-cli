@@ -1,67 +1,83 @@
 package app
 
 import (
+	"context"
 	"crypto/rand"
 	"fmt"
 	"math/big"
 	"os"
-	"sync"
 	"time"
 )
 
+type reel struct {
+	idx    int
+	symbol rune
+}
+
 type App struct {
 	symbols        []rune
-	mutex          sync.RWMutex
 	reelCount      int
 	currentSymbols []rune
 }
 
 func (a *App) Run() {
-	a.mutex.Lock()
 	a.currentSymbols = make([]rune, a.reelCount)
-	a.mutex.Unlock()
 
-	spinDur := time.Duration(a.reelCount*1000+500) * time.Millisecond
+	spinDur := time.Duration(a.reelCount*1000) * time.Millisecond
 	now := time.Now()
 	stopTime := now.Add(spinDur)
 
+	ch := make(chan *reel, 3)
+	defer close(ch)
+
 	for i := range a.currentSymbols {
 		reelSpinDur := time.Duration(i+1) * time.Second
-		go a.spinReel(i, now.Add(reelSpinDur))
+		go a.spinReel(ch, i, now.Add(reelSpinDur))
 	}
 
-	ticker := time.NewTicker(50 * time.Millisecond)
+	ctx, cancel := context.WithDeadline(context.Background(), stopTime)
+	defer cancel()
 
-	for tick := range ticker.C {
-		a.mutex.RLock()
-		var output string
-		for i, symbol := range a.currentSymbols {
-			if symbol == 0 {
-				continue
+	var (
+		output     string
+		prevOutput string
+	)
+
+	for {
+		select {
+		case reel := <-ch:
+			a.currentSymbols[reel.idx] = reel.symbol
+
+			for i, symbol := range a.currentSymbols {
+				if symbol == 0 {
+					continue
+				}
+
+				if i == len(a.currentSymbols)-1 {
+					output += fmt.Sprintf("%c", symbol)
+					break
+				}
+
+				output += fmt.Sprintf("%c|", symbol)
 			}
 
-			if i == len(a.currentSymbols)-1 {
-				output += fmt.Sprintf("%c", symbol)
-				break
-			}
+			fmt.Println(output)
+			time.Sleep(50 * time.Millisecond)
 
-			output += fmt.Sprintf("%c|", symbol)
-		}
-		a.mutex.RUnlock()
+			fmt.Print("\033[A")
+			fmt.Print("\033[2K")
 
-		fmt.Println(output)
-		time.Sleep(50 * time.Millisecond)
-
-		fmt.Print("\033[A")
-		fmt.Print("\033[2K")
-		if tick.After(stopTime) {
-			fmt.Printf("%s\n", output)
-			break
+			prevOutput = output
+			output = ""
+		case <-ctx.Done():
+			fmt.Printf("%s\n", prevOutput)
+			time.Sleep(200 * time.Millisecond)
+			return
 		}
 	}
 }
 
-func (a *App) spinReel(idx int, stopAt time.Time) {
+func (a *App) spinReel(ch chan *reel, idx int, stopTime time.Time) {
 	max := big.NewInt(int64(len(a.symbols)))
 	randBigInt, err := rand.Int(rand.Reader, max)
 	if err != nil {
@@ -69,18 +85,24 @@ func (a *App) spinReel(idx int, stopAt time.Time) {
 		os.Exit(1)
 	}
 
-	startIdx := randBigInt.Int64()
+	symbolIdx := randBigInt.Int64()
 
-	for time.Now().Before(stopAt) {
-		a.mutex.Lock()
-		a.currentSymbols[idx] = a.symbols[startIdx]
-		a.mutex.Unlock()
-		time.Sleep(50 * time.Millisecond)
+	ticker := time.NewTicker(50 * time.Millisecond)
 
-		if startIdx == int64(len(a.symbols))-1 {
-			startIdx = 0
+	for tick := range ticker.C {
+		if tick.After(stopTime) {
+			break
+		}
+
+		ch <- &reel{
+			idx:    idx,
+			symbol: a.symbols[symbolIdx],
+		}
+
+		if symbolIdx == int64(len(a.symbols))-1 {
+			symbolIdx = 0
 		} else {
-			startIdx++
+			symbolIdx++
 		}
 	}
 }
