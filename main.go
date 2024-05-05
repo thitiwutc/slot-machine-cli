@@ -11,6 +11,7 @@ import (
 
 func main() {
 	helpFlag := flag.Bool("h", false, "Display the help message")
+	spinCountFlag := flag.Int("n", 1, "Number of times the slot matchine spins")
 
 	flag.Usage = func() {
 		fmt.Println("Usage: slot [options] <bet amount>")
@@ -38,12 +39,14 @@ func main() {
 		os.Exit(0)
 	}
 
-	if len(os.Args) != 2 {
+	if len(flag.Args()) != 1 {
 		flag.Usage()
 		os.Exit(1)
 	}
 
-	betAmount, err := strconv.ParseFloat(os.Args[1], 64)
+	arg := flag.Arg(0)
+
+	betAmount, err := strconv.ParseFloat(arg, 64)
 	if err != nil {
 		fmt.Println(err)
 		flag.Usage()
@@ -57,5 +60,7 @@ func main() {
 
 	app := app.NewDefault()
 
-	app.Run(betAmount)
+	for i := 0; i < *spinCountFlag; i++ {
+		app.Run(betAmount)
+	}
 }
