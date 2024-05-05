@@ -30,5 +30,5 @@ Options:
 
   -h    Display the help message
   -n int
-      Number of times the slot matchine spins (default 1)
+        Number of times the slot matchine spins (default 1)
 ```
