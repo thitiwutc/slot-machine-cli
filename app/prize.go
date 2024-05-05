@@ -69,7 +69,7 @@ type prizes struct {
 }
 
 func (p prizes) calculatePrize(betAmount float64, symbols [3]rune) float64 {
-	for _, prizeCaltr := range p.matched1 {
+	for _, prizeCaltr := range p.matched3 {
 		if prize := prizeCaltr(betAmount, symbols); prize > 0 {
 			return prize
 		}
@@ -81,7 +81,7 @@ func (p prizes) calculatePrize(betAmount float64, symbols [3]rune) float64 {
 		}
 	}
 
-	for _, prizeCaltr := range p.matched3 {
+	for _, prizeCaltr := range p.matched1 {
 		if prize := prizeCaltr(betAmount, symbols); prize > 0 {
 			return prize
 		}
