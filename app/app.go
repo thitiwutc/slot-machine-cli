@@ -1,7 +1,6 @@
 package app
 
 import (
-	"context"
 	"crypto/rand"
 	"fmt"
 	"math/big"
@@ -22,29 +21,28 @@ type App struct {
 }
 
 func (a *App) Run(betAmount float64) {
-	spinDur := time.Duration(a.reelCount*1000) * time.Millisecond
 	now := time.Now()
-	stopTime := now.Add(spinDur)
 
 	ch := make(chan *reel, 3)
-	defer close(ch)
 
 	for i := range a.currentSymbols {
 		reelSpinDur := time.Duration(i+1) * time.Second
-		go a.spinReel(ch, i, now.Add(reelSpinDur))
+		go a.spinReel(ch, i, now.Add(reelSpinDur), i == len(a.currentSymbols)-1)
 	}
-
-	ctx, cancel := context.WithDeadline(context.Background(), stopTime)
-	defer cancel()
 
 	var (
 		output     string
 		prevOutput string
 	)
 
+LOOP:
 	for {
 		select {
-		case reel := <-ch:
+		case reel, ok := <-ch:
+			if !ok {
+				break LOOP
+			}
+
 			a.currentSymbols[reel.idx] = reel.symbol
 
 			for i, symbol := range a.currentSymbols {
@@ -67,20 +65,18 @@ func (a *App) Run(betAmount float64) {
 
 			prevOutput = output
 			output = ""
-		case <-ctx.Done():
-			prize := a.prizes.calculatePrize(betAmount, a.currentSymbols)
-			if prize > 0 {
-				fmt.Printf("%s You win %.2f\n", prevOutput, prize)
-			} else {
-				fmt.Printf("%s You lose\n", prevOutput)
-			}
-			time.Sleep(200 * time.Millisecond)
-			return
 		}
+	}
+
+	prize := a.prizes.calculatePrize(betAmount, a.currentSymbols)
+	if prize > 0 {
+		fmt.Printf("%s You win %.2f\n", prevOutput, prize)
+	} else {
+		fmt.Printf("%s You lose\n", prevOutput)
 	}
 }
 
-func (a *App) spinReel(ch chan *reel, idx int, stopTime time.Time) {
+func (a *App) spinReel(ch chan *reel, idx int, stopTime time.Time, lastReel bool) {
 	max := big.NewInt(int64(len(a.symbols)))
 	randBigInt, err := rand.Int(rand.Reader, max)
 	if err != nil {
@@ -107,6 +103,10 @@ func (a *App) spinReel(ch chan *reel, idx int, stopTime time.Time) {
 		} else {
 			symbolIdx++
 		}
+	}
+
+	if lastReel {
+		close(ch)
 	}
 }
 
