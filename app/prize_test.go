@@ -14,28 +14,28 @@ func TestPrizes_CalculatePrize(t *testing.T) {
 		expect float64
 	}{
 		{
-			name: "1CherryAtIndex0_Return1.5xBetAmount",
+			name: "1CherryAtIndex0_Return2xBetAmount",
 			args: args{
 				betAmount: 1,
 				symbols:   [3]rune{'🍒', '🍋', '🍀'},
 			},
-			expect: 1.5,
+			expect: 2,
 		},
 		{
-			name: "1CherryAtIndex1_Return1.5xBetAmount",
+			name: "1CherryAtIndex1_Return2xBetAmount",
 			args: args{
 				betAmount: 1,
 				symbols:   [3]rune{'🍋', '🍒', '🍀'},
 			},
-			expect: 1.5,
+			expect: 2,
 		},
 		{
-			name: "1CherryAtIndex2_Return1.5xBetAmount",
+			name: "1CherryAtIndex2_Return2xBetAmount",
 			args: args{
 				betAmount: 1,
 				symbols:   [3]rune{'🍀', '🍋', '🍒'},
 			},
-			expect: 1.5,
+			expect: 2,
 		},
 		{
 			name: "2WatermelonsAtIndex0And1_Return3xBetAmount",
