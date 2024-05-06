@@ -6,7 +6,7 @@ Play a slot machine in your terminal with fake money.
 
 ```shell
 $ slot 100
-💎|💎|💎 You win 1000.00
+💎|💎|💎 You win 3000.00
 ```
 
 ## Usage
