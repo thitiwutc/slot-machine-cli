@@ -86,6 +86,16 @@ func (a *App) spinReel(ch chan *reel, idx int, stopTime time.Time, lastReel bool
 
 	symbolIdx := randBigInt.Int64()
 
+	// Use the last symbol as a starting position. If exists.
+	if a.currentSymbols[idx] != 0 {
+		for i, symbol := range a.currentSymbols {
+			if symbol == a.currentSymbols[idx] {
+				symbolIdx = int64(i)
+				break
+			}
+		}
+	}
+
 	ticker := time.NewTicker(50 * time.Millisecond)
 
 	for tick := range ticker.C {
