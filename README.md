@@ -20,11 +20,13 @@ Maximum bet amount: 1,000,000
 
 Prizes:
 
-  One cherry (🍒) wins 2x bet amount
+  One cherry (🍒) wins 1.5x bet amount
   Two watermelons (🍉🍉) wins 3x bet amount
-  Three bells (🔔🔔🔔) wins 5x bet amount
-  Three diamonds (💎💎💎) wins 10x bet amount
-  Three cat faces (🐱🐱🐱) wins 100x bet amount
+  A cat and a fish (🐱🐟) wins 4x bet amount
+  A combination of 3 fruits and vegetables (🍒🍋🍊🍇🍉) wins 5x bet amount
+  Three bells (🔔🔔🔔) wins 10x bet amount
+  Three diamonds (💎💎💎) wins 30x bet amount
+  Three cat (🐱🐱🐱) wins 100x bet amount
 
 Options:
 

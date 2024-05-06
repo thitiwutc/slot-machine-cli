@@ -19,7 +19,7 @@ func TestPrizes_CalculatePrize(t *testing.T) {
 				betAmount: 1,
 				symbols:   [3]rune{'🍒', '🍋', '🍀'},
 			},
-			expect: 2,
+			expect: 1.5,
 		},
 		{
 			name: "1CherryAtIndex1_Return2xBetAmount",
@@ -27,7 +27,7 @@ func TestPrizes_CalculatePrize(t *testing.T) {
 				betAmount: 1,
 				symbols:   [3]rune{'🍋', '🍒', '🍀'},
 			},
-			expect: 2,
+			expect: 1.5,
 		},
 		{
 			name: "1CherryAtIndex2_Return2xBetAmount",
@@ -35,7 +35,7 @@ func TestPrizes_CalculatePrize(t *testing.T) {
 				betAmount: 1,
 				symbols:   [3]rune{'🍀', '🍋', '🍒'},
 			},
-			expect: 2,
+			expect: 1.5,
 		},
 		{
 			name: "2WatermelonsAtIndex0And1_Return3xBetAmount",
@@ -62,12 +62,36 @@ func TestPrizes_CalculatePrize(t *testing.T) {
 			expect: 3,
 		},
 		{
+			name: "1CatAnd1Fish_Return4xBetAmount",
+			args: args{
+				betAmount: 1,
+				symbols:   [3]rune{'🐱', '🐟', '🐟'},
+			},
+			expect: 4,
+		},
+		{
+			name: "Different3FruitsAndVegs_Return7.5xBetAmount",
+			args: args{
+				betAmount: 1,
+				symbols:   [3]rune{'🍋', '🍊', '🍉'},
+			},
+			expect: 5,
+		},
+		{
+			name: "Same3FruitsAndVegs_Return7.5xBetAmount",
+			args: args{
+				betAmount: 1,
+				symbols:   [3]rune{'🍊', '🍊', '🍊'},
+			},
+			expect: 5,
+		},
+		{
 			name: "3Bells_Return5xBetAmount",
 			args: args{
 				betAmount: 1,
 				symbols:   [3]rune{'🔔', '🔔', '🔔'},
 			},
-			expect: 5,
+			expect: 10,
 		},
 		{
 			name: "3Diamonds_Return10xBetAmount",
@@ -75,10 +99,10 @@ func TestPrizes_CalculatePrize(t *testing.T) {
 				betAmount: 1,
 				symbols:   [3]rune{'💎', '💎', '💎'},
 			},
-			expect: 10,
+			expect: 30,
 		},
 		{
-			name: "3CatFaces_Return100xBetAmount",
+			name: "3Cats_Return100xBetAmount",
 			args: args{
 				betAmount: 1,
 				symbols:   [3]rune{'🐱', '🐱', '🐱'},

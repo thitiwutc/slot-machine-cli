@@ -26,7 +26,16 @@ func (a *App) Run(betAmount float64) {
 	ch := make(chan *reel, 3)
 
 	for i := range a.currentSymbols {
-		reelSpinDur := time.Duration(i+1) * time.Second
+		randDur, err := rand.Int(rand.Reader, big.NewInt(50))
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		baseDur := time.Duration(i+1)*time.Second
+		extraDur := time.Duration(randDur.Int64()) * 10 * time.Millisecond
+
+		reelSpinDur :=  baseDur + extraDur
 		go a.spinReel(ch, i, now.Add(reelSpinDur), i == len(a.currentSymbols)-1)
 	}
 
@@ -120,8 +129,7 @@ func (a *App) spinReel(ch chan *reel, idx int, stopTime time.Time, lastReel bool
 	}
 }
 
-// NewDefault returns App with default symbols (🍒, 🍋, 🍊, 🍇, 🍉, 🍕, 🍀, 💎, and 🔔)
-// and 3 reels.
+// NewDefault returns App with default symbols and 3 reels.
 func NewDefault() *App {
 	return &App{
 		symbols: []rune{
@@ -131,6 +139,7 @@ func NewDefault() *App {
 			'🍇',
 			'🍉',
 			'🐱',
+			'🐟',
 			'🍀',
 			'💎',
 			'🔔',
