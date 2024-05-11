@@ -32,10 +32,10 @@ func (a *App) Run(betAmount float64) {
 			os.Exit(1)
 		}
 
-		baseDur := time.Duration(i+1)*time.Second
+		baseDur := time.Duration(i+1) * time.Second
 		extraDur := time.Duration(randDur.Int64()) * 10 * time.Millisecond
 
-		reelSpinDur :=  baseDur + extraDur
+		reelSpinDur := baseDur + extraDur
 		go a.spinReel(ch, i, now.Add(reelSpinDur), i == len(a.currentSymbols)-1)
 	}
 

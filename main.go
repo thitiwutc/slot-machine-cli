@@ -27,7 +27,7 @@ func main() {
 		fmt.Println("  A combination of 3 fruits and vegetables (🍒🍋🍊🍇🍉) wins 5x bet amount")
 		fmt.Println("  Three bells (🔔🔔🔔) wins 10x bet amount")
 		fmt.Println("  Three diamonds (💎💎💎) wins 30x bet amount")
-		fmt.Println("  Three cat (🐱🐱🐱) wins 100x bet amount")
+		fmt.Println("  Three cats (🐱🐱🐱) wins 100x bet amount")
 		fmt.Println()
 		fmt.Println("Options:")
 		fmt.Println()

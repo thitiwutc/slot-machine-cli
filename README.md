@@ -26,7 +26,7 @@ Prizes:
   A combination of 3 fruits and vegetables (🍒🍋🍊🍇🍉) wins 5x bet amount
   Three bells (🔔🔔🔔) wins 10x bet amount
   Three diamonds (💎💎💎) wins 30x bet amount
-  Three cat (🐱🐱🐱) wins 100x bet amount
+  Three cats (🐱🐱🐱) wins 100x bet amount
 
 Options:
 
