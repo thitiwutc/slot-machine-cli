@@ -2,13 +2,6 @@
 
 Play a slot machine in your terminal with fake money.
 
-## Spin the machine!
-
-```shell
-$ slot 100
-💎|💎|💎 You win 3000.00
-```
-
 ## Usage
 
 ```shell
@@ -22,5 +15,6 @@ Options:
     	Number of reels to spin (default 3)
   -nspin int
     	Number of times the slot matchine spins (default 1)
-
+  -symbols string
+    	Symbol set in reel (default "🍒🍋🍊🍇🍉🐶🐱🦆🦓🐟🍀💎🔔")
 ```

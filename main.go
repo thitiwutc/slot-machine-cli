@@ -12,7 +12,9 @@ func main() {
 	helpFlag := flag.Bool("h", false, "Display the help message")
 	spinCountFlag := flag.Int("nspin", 1, "Number of times the slot matchine spins")
 	reelCount := flag.Int("nreel", 3, "Number of reels to spin")
+	symbols := flag.String("symbols", "🍒🍋🍊🍇🍉🐶🐱🦆🦓🐟🍀💎🔔", "Symbol set in reel")
 
+	flag.CommandLine.SetOutput(os.Stdout)
 	flag.Usage = func() {
 		fmt.Println("Usage: slot [options]")
 		fmt.Println()
@@ -33,7 +35,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	app := app.NewDefault(*reelCount)
+	app := app.NewDefault(*symbols, *reelCount)
 
 	for i := 0; i < *spinCountFlag; i++ {
 		app.Run()

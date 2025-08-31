@@ -123,20 +123,9 @@ func (a *App) spinReel(ch chan *reel, idx int, stopTime time.Time, lastReel bool
 }
 
 // NewDefault returns App with default symbols and 3 reels.
-func NewDefault(reelCount int) *App {
+func NewDefault(symbols string, reelCount int) *App {
 	return &App{
-		symbols: []rune{
-			'🍒',
-			'🍋',
-			'🍊',
-			'🍇',
-			'🍉',
-			'🐱',
-			'🐟',
-			'🍀',
-			'💎',
-			'🔔',
-		},
+		symbols:    []rune(symbols),
 		reelStates: make([]rune, reelCount),
 	}
 }
