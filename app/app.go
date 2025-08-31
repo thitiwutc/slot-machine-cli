@@ -14,18 +14,16 @@ type reel struct {
 }
 
 type App struct {
-	symbols        []rune
-	reelCount      int
-	currentSymbols [3]rune
-	prizes         prizes
+	symbols    []rune
+	reelStates []rune
 }
 
-func (a *App) Run(betAmount float64) {
+func (a *App) Run() {
 	now := time.Now()
 
-	ch := make(chan *reel, 3)
+	ch := make(chan *reel)
 
-	for i := range a.currentSymbols {
+	for i := range a.reelStates {
 		randDur, err := rand.Int(rand.Reader, big.NewInt(50))
 		if err != nil {
 			fmt.Println(err)
@@ -36,7 +34,7 @@ func (a *App) Run(betAmount float64) {
 		extraDur := time.Duration(randDur.Int64()) * 10 * time.Millisecond
 
 		reelSpinDur := baseDur + extraDur
-		go a.spinReel(ch, i, now.Add(reelSpinDur), i == len(a.currentSymbols)-1)
+		go a.spinReel(ch, i, now.Add(reelSpinDur), i == len(a.reelStates)-1)
 	}
 
 	var (
@@ -52,14 +50,14 @@ LOOP:
 				break LOOP
 			}
 
-			a.currentSymbols[reel.idx] = reel.symbol
+			a.reelStates[reel.idx] = reel.symbol
 
-			for i, symbol := range a.currentSymbols {
+			for i, symbol := range a.reelStates {
 				if symbol == 0 {
 					continue
 				}
 
-				if i == len(a.currentSymbols)-1 {
+				if i == len(a.reelStates)-1 {
 					output += fmt.Sprintf("%c", symbol)
 					break
 				}
@@ -77,12 +75,7 @@ LOOP:
 		}
 	}
 
-	prize := a.prizes.calculatePrize(betAmount, a.currentSymbols)
-	if prize > 0 {
-		fmt.Printf("%s You win %.2f\n", prevOutput, prize)
-	} else {
-		fmt.Printf("%s You lose\n", prevOutput)
-	}
+	fmt.Println(prevOutput)
 }
 
 func (a *App) spinReel(ch chan *reel, idx int, stopTime time.Time, lastReel bool) {
@@ -96,9 +89,9 @@ func (a *App) spinReel(ch chan *reel, idx int, stopTime time.Time, lastReel bool
 	symbolIdx := randBigInt.Int64()
 
 	// Use the last symbol as a starting position. If exists.
-	if a.currentSymbols[idx] != 0 {
-		for i, symbol := range a.currentSymbols {
-			if symbol == a.currentSymbols[idx] {
+	if a.reelStates[idx] != 0 {
+		for i, symbol := range a.reelStates {
+			if symbol == a.reelStates[idx] {
 				symbolIdx = int64(i)
 				break
 			}
@@ -130,7 +123,7 @@ func (a *App) spinReel(ch chan *reel, idx int, stopTime time.Time, lastReel bool
 }
 
 // NewDefault returns App with default symbols and 3 reels.
-func NewDefault() *App {
+func NewDefault(reelCount int) *App {
 	return &App{
 		symbols: []rune{
 			'🍒',
@@ -144,11 +137,6 @@ func NewDefault() *App {
 			'💎',
 			'🔔',
 		},
-		reelCount: 3,
-		prizes: prizes{
-			matched1: defaultMatched1PrizeCaltr,
-			matched2: defaultMatched2PrizeCaltr,
-			matched3: defaultMatched3PrizeCaltr,
-		},
+		reelStates: make([]rune, reelCount),
 	}
 }
