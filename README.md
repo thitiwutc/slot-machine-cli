@@ -1,6 +1,6 @@
 # slot-machine-cli
 
-Play a slot machine in your terminal with fake money.
+Play a slot machine in your terminal.
 
 ## Usage
 
